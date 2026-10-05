@@ -1,0 +1,27 @@
+# Every knob that affects a number in the results table lives here.
+
+seed: 13
+n_bridge: 100
+n_comparison: 50
+
+embedding_model: sentence-transformers/all-MiniLM-L6-v2
+
+# One model does both graph extraction and answering.
+# anthropic: hosted, needs ANTHROPIC_API_KEY in .env. ollama: local container, no key, slow on CPU.
+llm_provider: anthropic
+llm_model: claude-haiku-4-5-20251001     # for ollama use e.g. qwen2.5:3b-instruct
+llm_temperature: 0
+llm_num_ctx: 4096       # ollama only
+llm_workers: 8          # parallel requests (use 4 for ollama, matching OLLAMA_NUM_PARALLEL)
+
+# Context budget, identical for both pipelines.
+k: 5
+max_context_tokens: 1200
+
+# Graph pipeline.
+merge_threshold: 0.95   # cosine above which two entity names are merged
+n_seeds: 5              # entity nodes matched to the question by embedding
+max_hops: 2
+hub_cap: 10             # ablation row: ignore nodes attached to > 10 paragraphs (~99th percentile)
+
+bootstrap_samples: 2000

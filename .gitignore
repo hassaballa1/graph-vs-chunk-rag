@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+.DS_Store
+# The built graph is cheap to rebuild from the cache. cache/llm/ is committed:
+# it is what makes every LLM-derived number reproducible from a clean clone.
+cache/graph*.pkl
+.env
+results/dev/
