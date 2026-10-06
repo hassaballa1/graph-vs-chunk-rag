@@ -1,8 +1,20 @@
 # Every knob that affects a number in the results table lives here.
 
 seed: 13
-n_bridge: 100
-n_comparison: 50
+
+# Each dataset has its own frozen sample, graph and results folder. `python run.py --dataset 2wiki`.
+datasets:
+  hotpotqa:
+    data_dir: data
+    results_dir: results
+    n_bridge: 100
+    n_comparison: 50
+    hub_ablation: true
+  2wiki:
+    data_dir: data/2wiki
+    results_dir: results/2wiki
+    n_per_type: 40        # comparison, bridge_comparison, compositional, inference
+    hub_ablation: false
 
 embedding_model: sentence-transformers/all-MiniLM-L6-v2
 
@@ -23,5 +35,11 @@ merge_threshold: 0.95   # cosine above which two entity names are merged
 n_seeds: 5              # entity nodes matched to the question by embedding
 max_hops: 2
 hub_cap: 10             # ablation row: ignore nodes attached to > 10 paragraphs (~99th percentile)
+
+# Graph v2 (seeds from question mentions, names stripped of disambiguation).
+hop_decay: 0.5          # paragraph score = similarity * hop_decay ** hop; set a priori, not tuned
+
+# Hybrid pipeline.
+rrf_k: 60              # Reciprocal Rank Fusion constant (Cormack et al. 2009 default, not tuned)
 
 bootstrap_samples: 2000

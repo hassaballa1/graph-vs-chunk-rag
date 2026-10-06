@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"John Simon: John Simon may refer to\",\n    \"John Simon\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"John Simon: John Simon may refer to\",\n      \"relation\": \"is about\",\n      \"object\": \"John Simon\"\n    }\n  ]\n}\n```", "prompt_tokens": 162, "output_tokens": 87, "seconds": 1.23}

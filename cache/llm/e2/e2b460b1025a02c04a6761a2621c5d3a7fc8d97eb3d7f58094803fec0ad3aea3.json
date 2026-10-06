@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\"The Beast\"],\n  \"triples\": []\n}\n```\n\nThe paragraph only introduces a title \"The Beast\" and indicates it's a disambiguation page (may refer to multiple things), but doesn't establish any specific facts connecting entities. Therefore, there are no triples to extract.", "prompt_tokens": 162, "output_tokens": 72, "seconds": 1.36}

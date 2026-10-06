@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"It's My Time (Jeanie Tracy album)\",\n    \"It's My Time\",\n    \"Jeanie Tracy\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"It's My Time\",\n      \"relation\": \"is second studio album by\",\n      \"object\": \"Jeanie Tracy\"\n    }\n  ]\n}\n```", "prompt_tokens": 179, "output_tokens": 100, "seconds": 1.3}

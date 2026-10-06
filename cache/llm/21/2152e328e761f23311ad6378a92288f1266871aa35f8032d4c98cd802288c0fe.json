@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"I Will Be Your Friend\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"I Will Be Your Friend\",\n      \"relation\": \"is a disambiguation page for\",\n      \"object\": \"I Will Be Your Friend\"\n    }\n  ]\n}\n```", "prompt_tokens": 170, "output_tokens": 81, "seconds": 1.139}

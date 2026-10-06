@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Ringo-en no sh\u014djo\",\n    \"Tomoo Shimogawara\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Ringo-en no sh\u014djo\",\n      \"relation\": \"art director\",\n      \"object\": \"Tomoo Shimogawara\"\n    }\n  ]\n}\n```", "prompt_tokens": 176, "output_tokens": 101, "seconds": 1.698}

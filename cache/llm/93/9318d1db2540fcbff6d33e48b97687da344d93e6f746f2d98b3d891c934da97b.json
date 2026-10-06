@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Francis I\",\n    \"Francis the First\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Francis I\",\n      \"relation\": \"also known as\",\n      \"object\": \"Francis the First\"\n    }\n  ]\n}\n```", "prompt_tokens": 166, "output_tokens": 78, "seconds": 1.09}

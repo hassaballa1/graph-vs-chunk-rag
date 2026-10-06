@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"The Spirit of Christmas 2009\",\n    \"Spirit of Christmas album series\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"The Spirit of Christmas 2009\",\n      \"relation\": \"part of\",\n      \"object\": \"Spirit of Christmas album series\"\n    }\n  ]\n}\n```", "prompt_tokens": 179, "output_tokens": 91, "seconds": 1.102}

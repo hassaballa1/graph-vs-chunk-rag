@@ -17,8 +17,9 @@ from src.common import load_config  # noqa: E402
 
 def main():
     cfg = load_config()
-    out_q = ROOT / "data" / "questions.jsonl"
-    out_c = ROOT / "data" / "corpus.jsonl"
+    dcfg = cfg["datasets"]["hotpotqa"]
+    out_q = ROOT / dcfg["data_dir"] / "questions.jsonl"
+    out_c = ROOT / dcfg["data_dir"] / "corpus.jsonl"
     if out_q.exists() and "--force" not in sys.argv:
         print(f"{out_q} already exists; the sample is frozen. Pass --force to rebuild.")
         return
@@ -28,8 +29,8 @@ def main():
     by_type = {"bridge": [], "comparison": []}
     for i, t in enumerate(ds["type"]):
         by_type[t].append(i)
-    picked = rng.sample(by_type["bridge"], cfg["n_bridge"]) + rng.sample(
-        by_type["comparison"], cfg["n_comparison"]
+    picked = rng.sample(by_type["bridge"], dcfg["n_bridge"]) + rng.sample(
+        by_type["comparison"], dcfg["n_comparison"]
     )
     # Shuffle so any prefix (used by --limit) has a mix of both types.
     rng.shuffle(picked)
@@ -56,8 +57,8 @@ def main():
         "source": "hotpotqa/hotpot_qa distractor validation",
         "license": "CC BY-SA 4.0",
         "seed": cfg["seed"],
-        "n_bridge": cfg["n_bridge"],
-        "n_comparison": cfg["n_comparison"],
+        "n_bridge": dcfg["n_bridge"],
+        "n_comparison": dcfg["n_comparison"],
     }
     with open(out_q, "w") as f:
         f.write(json.dumps({"_meta": meta}) + "\n")

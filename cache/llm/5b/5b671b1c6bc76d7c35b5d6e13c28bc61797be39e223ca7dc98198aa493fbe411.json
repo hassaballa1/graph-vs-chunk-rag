@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Franklin County High School (Indiana)\",\n    \"Brookville, Indiana\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Franklin County High School (Indiana)\",\n      \"relation\": \"located in\",\n      \"object\": \"Brookville, Indiana\"\n    }\n  ]\n}\n```", "prompt_tokens": 176, "output_tokens": 89, "seconds": 1.139}

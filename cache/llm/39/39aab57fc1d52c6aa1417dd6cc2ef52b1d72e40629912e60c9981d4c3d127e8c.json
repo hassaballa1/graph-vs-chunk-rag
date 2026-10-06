@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"John Wick (disambiguation)\",\n    \"John Wick\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"John Wick (disambiguation)\",\n      \"relation\": \"refers to\",\n      \"object\": \"John Wick\"\n    }\n  ]\n}\n```", "prompt_tokens": 168, "output_tokens": 87, "seconds": 1.323}

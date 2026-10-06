@@ -85,33 +85,41 @@ def pct(x):
     return f"{100 * x:.1f}"
 
 
+TYPE_ORDER = ("bridge", "comparison", "bridge_comparison", "compositional", "inference")
+
+
+def question_types(questions):
+    """Question types present, in a fixed display order."""
+    present = {q["type"] for q in questions}
+    return [t for t in TYPE_ORDER if t in present] + sorted(present - set(TYPE_ORDER))
+
+
+def type_label(t):
+    return t.replace("_", "-")
+
+
 def summarise(scores, questions):
+    """Overall means, plus means per question type under ("by_type", type)."""
     def mean(metric, qtype=None):
         vals = [s[metric] for s, q in zip(scores, questions) if qtype in (None, q["type"])]
         return float(np.mean(vals)) if vals else float("nan")
 
-    return {
-        "recall": mean("recall"),
-        "recall_bridge": mean("recall", "bridge"),
-        "recall_comparison": mean("recall", "comparison"),
-        "full_support": mean("full_support"),
-        "f1": mean("f1"),
-        "f1_bridge": mean("f1", "bridge"),
-        "f1_comparison": mean("f1", "comparison"),
-        "em": mean("em"),
-    }
+    out = {m: mean(m) for m in ("recall", "full_support", "f1", "em")}
+    out["by_type"] = {t: {m: mean(m, t) for m in ("recall", "full_support", "f1")}
+                      for t in question_types(questions)}
+    return out
 
 
-def gap_rows(questions, runs, cfg):
-    """Every non-chunk pipeline minus chunk, per metric and question type."""
+def gap_rows(questions, runs, cfg, baseline="Chunk", only=None):
+    """Each pipeline (or just `only`) minus the baseline, per metric and question type."""
     rows = []
-    for name in runs:
-        if name == "Chunk":
+    for name in only or runs:
+        if name == baseline:
             continue
         for metric in ("recall", "full_support", "f1"):
-            for qtype in (None, "bridge", "comparison"):
+            for qtype in (None, *question_types(questions)):
                 keep = [i for i, q in enumerate(questions) if qtype in (None, q["type"])]
-                a = [runs["Chunk"]["scores"][i][metric] for i in keep]
+                a = [runs[baseline]["scores"][i][metric] for i in keep]
                 b = [runs[name]["scores"][i][metric] for i in keep]
                 d, lo, hi = bootstrap_diff(a, b, cfg["bootstrap_samples"], cfg["seed"])
                 rows.append({"pipeline": name, "metric": metric, "subset": qtype or "all",
@@ -122,22 +130,24 @@ def gap_rows(questions, runs, cfg):
 def results_markdown(questions, runs, cfg, no_context=None):
     """runs: {name: {"scores": [...], "index_tokens", "index_seconds", "latencies"}}"""
     k = cfg["k"]
-    n_b = sum(q["type"] == "bridge" for q in questions)
+    types = question_types(questions)
+    counts = ", ".join(f"{sum(q['type'] == t for q in questions)} {type_label(t)}" for t in types)
     lines = [
         f"# Results\n",
-        f"{len(questions)} HotpotQA questions ({n_b} bridge, {len(questions) - n_b} comparison), "
+        f"{len(questions)} {cfg['dataset_name']} questions ({counts}), "
         f"generator `{cfg['llm_model']}`, embeddings `{cfg['embedding_model']}`, "
         f"k = {k}, context cap {cfg['max_context_tokens']} tokens.\n",
-        f"| Pipeline | Recall@{k} | Full support@{k} | F1 all | F1 bridge | F1 comparison | EM "
-        f"| Index tokens | Index time | Latency |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        f"| Pipeline | Recall@{k} | Full support@{k} | F1 all | "
+        + " | ".join(f"F1 {type_label(t)}" for t in types)
+        + " | EM | Index tokens | Index time | Latency |",
+        "|---|" + "---|" * (len(types) + 7),
     ]
     for name, r in runs.items():
         s = summarise(r["scores"], questions)
         lines.append(
-            f"| {name} | {pct(s['recall'])} | {pct(s['full_support'])} | {pct(s['f1'])} "
-            f"| {pct(s['f1_bridge'])} | {pct(s['f1_comparison'])} | {pct(s['em'])} "
-            f"| {r['index_tokens']:,} | {r['index_seconds']:.0f} s "
+            f"| {name} | {pct(s['recall'])} | {pct(s['full_support'])} | {pct(s['f1'])} | "
+            + " | ".join(pct(s["by_type"][t]["f1"]) for t in types)
+            + f" | {pct(s['em'])} | {r['index_tokens']:,} | {r['index_seconds']:.0f} s "
             f"| {1000 * float(np.median(r['latencies'])):.0f} ms |"
         )
     if no_context is not None:
@@ -146,14 +156,30 @@ def results_markdown(questions, runs, cfg, no_context=None):
             f"\nNo-context floor (model answers from memory): F1 {pct(s['f1'])}, EM {pct(s['em'])}."
         )
 
-    gaps = gap_rows(questions, runs, cfg)
-    if gaps:
-        lines.append("\n## Difference from chunk, with paired bootstrap 95% intervals\n")
+    if "Chunk" in runs and "Graph" in runs:
+        # Upper bound for any hybrid of the two: a router that knows which one wins each question.
+        oracle = [{m: max(a[m], b[m]) for m in a}
+                  for a, b in zip(runs["Chunk"]["scores"], runs["Graph"]["scores"])]
+        s = summarise(oracle, questions)
+        lines.append(
+            f"\nOracle router (best of chunk and graph per question, a ceiling, not a pipeline): "
+            f"Recall@{k} {pct(s['recall'])}, F1 {pct(s['f1'])} ("
+            + ", ".join(f"{type_label(t)} {pct(s['by_type'][t]['f1'])}" for t in types) + ")."
+        )
+
+    sections = [("Difference from chunk", gap_rows(questions, runs, cfg))]
+    vs_graph = [n for n in runs if n.startswith("Hybrid") or n == "Graph v2"]
+    if vs_graph and "Graph" in runs:
+        sections.append(("Difference from graph", gap_rows(questions, runs, cfg, baseline="Graph", only=vs_graph)))
+    for heading, gaps in sections:
+        if not gaps:
+            continue
+        lines.append(f"\n## {heading}, with paired bootstrap 95% intervals\n")
         lines.append("| Pipeline | Metric | Subset | Difference | 95% interval | Crosses zero |")
         lines.append("|---|---|---|---|---|---|")
         for g in gaps:
             lines.append(
-                f"| {g['pipeline']} | {g['metric']} | {g['subset']} | {pct(g['diff'])} "
+                f"| {g['pipeline']} | {g['metric']} | {type_label(g['subset'])} | {pct(g['diff'])} "
                 f"| [{pct(g['lo'])}, {pct(g['hi'])}] | {'yes' if g['lo'] <= 0 <= g['hi'] else 'no'} |"
             )
     return "\n".join(lines) + "\n"

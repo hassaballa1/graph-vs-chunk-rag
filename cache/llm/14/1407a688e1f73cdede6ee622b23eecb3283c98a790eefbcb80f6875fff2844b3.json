@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Health and intelligence\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Health and intelligence\",\n      \"relation\": \"is a disambiguation page for\",\n      \"object\": \"Health and intelligence\"\n    }\n  ]\n}\n```", "prompt_tokens": 164, "output_tokens": 75, "seconds": 1.11}

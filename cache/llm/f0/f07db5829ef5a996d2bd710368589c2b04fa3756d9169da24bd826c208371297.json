@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"William Gray Beyer\",\n    \"William Gray Beyer\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"William Gray Beyer\",\n      \"relation\": \"was\",\n      \"object\": \"American writer of science fiction and mystery\"\n    }\n  ]\n}\n```", "prompt_tokens": 174, "output_tokens": 88, "seconds": 1.158}

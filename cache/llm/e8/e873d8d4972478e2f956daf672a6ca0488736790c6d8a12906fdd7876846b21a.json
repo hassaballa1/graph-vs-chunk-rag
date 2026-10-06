@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"When I Was a Bachelor\",\n    \"English nursery rhyme\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"When I Was a Bachelor\",\n      \"relation\": \"is\",\n      \"object\": \"English nursery rhyme\"\n    }\n  ]\n}\n```", "prompt_tokens": 174, "output_tokens": 86, "seconds": 1.006}

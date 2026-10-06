@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Neisse (disambiguation)\",\n    \"Lusatian Neisse\",\n    \"Central Europe\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Lusatian Neisse\",\n      \"relation\": \"is a river in\",\n      \"object\": \"Central Europe\"\n    }\n  ]\n}\n```", "prompt_tokens": 183, "output_tokens": 96, "seconds": 1.258}

@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Hugh McGary Jr.\",\n    \"Evansville, Indiana\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Hugh McGary Jr.\",\n      \"relation\": \"founder of\",\n      \"object\": \"Evansville, Indiana\"\n    }\n  ]\n}\n```", "prompt_tokens": 174, "output_tokens": 87, "seconds": 1.122}

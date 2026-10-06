@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Where Was I\",\n    \"Where Was I?\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Where Was I\",\n      \"relation\": \"may refer to\",\n      \"object\": \"Where Was I?\"\n    }\n  ]\n}\n```", "prompt_tokens": 166, "output_tokens": 80, "seconds": 1.114}

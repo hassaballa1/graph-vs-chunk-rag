@@ -1,6 +1,7 @@
 """Graph pipeline, index side: LLM triple extraction, entity merging, NetworkX graph."""
 import json
 import pickle
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -29,6 +30,17 @@ Paragraph:
 
 def norm(name):
     return " ".join(str(name).lower().strip().strip(".,;:'\"").split())
+
+
+DISAMBIGUATION = re.compile(r"\s*\([^)]*\)")
+CLUB_SUFFIX = re.compile(r"\s+(a\.?f\.?c|f\.?c|s\.?c|c\.?f)\.?$")
+
+
+def norm_v2(name):
+    """norm, plus stripping disambiguation: "chris wood (footballer, born 1991)" -> "chris wood",
+    "leeds united f.c." -> "leeds united"."""
+    n = DISAMBIGUATION.sub("", norm(name))
+    return norm(CLUB_SUFFIX.sub("", n))
 
 
 def parse_extraction(text):
@@ -103,8 +115,11 @@ def merge_entities(names, embedder, threshold):
     return {n: min(g, key=lambda s: (len(s), s)) for g in groups.values() for n in g}
 
 
-def build_graph(corpus, embedder, cfg):
-    key = sha(json.dumps([EXTRACT_PROMPT, cfg["llm_model"], cfg["merge_threshold"], sorted(p["id"] for p in corpus)]))
+def build_graph(corpus, embedder, cfg, version="v1"):
+    """version "v2" normalises names with norm_v2; the extractions (and their cost) are shared."""
+    name_norm = norm_v2 if version == "v2" else norm
+    parts = [EXTRACT_PROMPT, cfg["llm_model"], cfg["merge_threshold"], sorted(p["id"] for p in corpus)]
+    key = sha(json.dumps(parts + ([version] if version != "v1" else [])))
     path = CACHE / f"graph-{key[:12]}.pkl"
     if path.exists():
         with open(path, "rb") as f:
@@ -115,22 +130,22 @@ def build_graph(corpus, embedder, cfg):
 
     all_names = set()
     for pid, (entities, triples) in extractions.items():
-        all_names.update(norm(e) for e in entities)
+        all_names.update(name_norm(e) for e in entities)
         for s, _, o in triples:
-            all_names.update((norm(s), norm(o)))
-        all_names.add(norm(pid))  # the title is always an entity
+            all_names.update((name_norm(s), name_norm(o)))
+        all_names.add(name_norm(pid))  # the title is always an entity
     all_names.discard("")
     canon = merge_entities(all_names, embedder, cfg["merge_threshold"])
 
     g = nx.Graph()
     for pid, (entities, triples) in extractions.items():
         for e in set(entities) | {pid}:
-            c = canon.get(norm(e))
+            c = canon.get(name_norm(e))
             if c:
                 g.add_node(c)
                 g.nodes[c].setdefault("paragraphs", set()).add(pid)
         for s, rel, o in triples:
-            cs, co = canon.get(norm(s)), canon.get(norm(o))
+            cs, co = canon.get(name_norm(s)), canon.get(name_norm(o))
             if not cs or not co or cs == co:
                 continue
             for c in (cs, co):

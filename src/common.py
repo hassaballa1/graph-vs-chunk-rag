@@ -21,13 +21,13 @@ def load_jsonl(path):
     return [r for r in rows if "_meta" not in r]
 
 
-def load_data(limit=None):
+def load_data(data_dir, limit=None):
     """Questions, plus the corpus pooled over exactly those questions."""
-    questions = load_jsonl(ROOT / "data" / "questions.jsonl")
+    questions = load_jsonl(ROOT / data_dir / "questions.jsonl")
     if limit:
         questions = questions[:limit]
     wanted = {t for q in questions for t in q["context_titles"]}
-    corpus = [p for p in load_jsonl(ROOT / "data" / "corpus.jsonl") if p["title"] in wanted]
+    corpus = [p for p in load_jsonl(ROOT / data_dir / "corpus.jsonl") if p["title"] in wanted]
     return questions, corpus
 
 

@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Black Code: Black Code or Black Codes may refer to\",\n    \"Black Code\",\n    \"Black Codes\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Black Code\",\n      \"relation\": \"also known as\",\n      \"object\": \"Black Codes\"\n    }\n  ]\n}\n```", "prompt_tokens": 166, "output_tokens": 94, "seconds": 1.093}

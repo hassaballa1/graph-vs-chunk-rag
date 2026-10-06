@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\"Nightfall\"],\n  \"triples\": []\n}\n```\n\nThe paragraph only introduces the title \"Nightfall\" and indicates it may refer to multiple things, but doesn't establish any specific factual connections between named entities. Therefore, there are no triples to extract.", "prompt_tokens": 167, "output_tokens": 72, "seconds": 1.292}

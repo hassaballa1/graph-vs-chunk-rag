@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"St. Francis' Church\",\n    \"Church of St Francis\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"St. Francis' Church\",\n      \"relation\": \"also known as\",\n      \"object\": \"Church of St Francis\"\n    }\n  ]\n}\n```", "prompt_tokens": 180, "output_tokens": 86, "seconds": 1.087}

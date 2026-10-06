@@ -19,7 +19,9 @@ class ChunkIndex:
         """Cosine similarity of a question vector to every paragraph (vectors are unit length)."""
         return self.vectors @ qvec
 
+    def ranked(self, qvec):
+        """Every paragraph, best first."""
+        return [self.corpus[i] for i in np.argsort(-self.scores(qvec))]
+
     def retrieve(self, question, k):
-        s = self.scores(self.embedder.encode([question], memo=False)[0])
-        top = np.argsort(-s)[:k]
-        return [self.corpus[i] for i in top]
+        return self.ranked(self.embedder.encode([question], memo=False)[0])[:k]

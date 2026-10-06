@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"entities\": [\n    \"Iraqi nationality law\",\n    \"Iraqi nationality\",\n    \"one's parents\"\n  ],\n  \"triples\": [\n    {\n      \"subject\": \"Iraqi nationality\",\n      \"relation\": \"transmitted by\",\n      \"object\": \"one's parents\"\n    }\n  ]\n}\n```", "prompt_tokens": 166, "output_tokens": 84, "seconds": 1.172}
